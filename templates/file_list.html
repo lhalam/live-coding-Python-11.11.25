@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Файловий Менеджер | Flask</title>
+    
+    {# Вбудовані стилі для швидкого покращення вигляду #}
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background-color: #f4f7f9;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #007bff;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            font-size: 28px;
+        }
+
+        .action-bar {
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn {
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-primary {
+            background-color: #28a745; /* Зелений для створення */
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #1e7e34;
+        }
+        
+        .file-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .file-list li {
+            background-color: #f9f9f9;
+            border: 1px solid #eee;
+            margin-bottom: 8px;
+            padding: 12px 15px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .file-name-link {
+            text-decoration: none;
+            color: #007bff;
+            font-weight: 500;
+            flex-grow: 1; /* Дозволяє зайняти більшу частину простору */
+        }
+        .file-name-link:hover {
+            text-decoration: underline;
+        }
+
+        .btn-secondary {
+            background-color: #ffc107; /* Жовтий для редагування */
+            color: #333;
+            margin-left: 10px;
+            font-size: 14px;
+        }
+        .btn-secondary:hover {
+            background-color: #e0a800;
+        }
+
+        .info-message {
+            padding: 15px;
+            background-color: #ffeeba;
+            border: 1px solid #ffcc00;
+            border-radius: 5px;
+            color: #856404;
+        }
+        
+        .refresh-link {
+            display: block;
+            margin-top: 20px;
+            text-align: center;
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📁 Доступні файли та нотатки</h1>
+
+        <div class="action-bar">
+            {# Стилізоване посилання як кнопка "Створити" #}
+            <a href="{{ url_for('create_note') }}" class="btn btn-primary">➕ Створити нотатку</a>
+            
+            {# Посилання "Оновити список" справа #}
+            <a href="/" class="btn refresh-link">🔄 Оновити список</a>
+        </div>
+
+
+        {% if files %}
+            <ul class="file-list">
+            {% for file in files %}
+                {# Використовуємо <li> для кожного елемента #}
+                <li>
+                    {# Посилання на сам файл #}
+                    <a href="{{ url_for('download_file', filename=file) }}" class="file-name-link">
+                        {{ file }}
+                    </a>
+                    
+                    {# Кнопка "Редагувати" як стилізоване посилання #}
+                    {# Примітка: Логіка `file[:-4]` (для видалення розширення .txt/.html) є припущенням. #}
+                    <a href="{{ url_for('update_note', filename=file[:-4]) }}" class="btn btn-secondary">Редагувати</a>
+                </li>
+            {% endfor %}
+            </ul>
+        {% else %}
+            <div class="info-message">
+                <p>Не знайдено жодного файлу чи нотатки у директорії uploads. Час створити щось!</p>
+            </div>
+        {% endif %}
+    </div>
+
+</body>
+</html>

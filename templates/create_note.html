@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if note %}Редагування{% else %}Створення{% endif %} нотатки</title>
+    
+    {# Вбудовані стилі для гарного вигляду #}
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 40px;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #007bff;
+            border-bottom: 2px solid #e9ecef;
+            padding-bottom: 10px;
+            margin-bottom: 25px;
+            font-size: 24px;
+        }
+
+        form div {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #495057;
+        }
+
+        input[type="text"],
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            box-sizing: border-box; /* Важливо для коректної ширини */
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus,
+        textarea:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 150px;
+        }
+
+        .btn-submit {
+            background-color: #28a745;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+            width: 100%;
+        }
+
+        .btn-submit:hover {
+            background-color: #1e7e34;
+        }
+
+        .back-link {
+            display: block;
+            margin-top: 20px;
+            text-align: center;
+            color: #6c757d;
+            text-decoration: none;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        
+        {# Універсальний заголовок: він був продубльований, я залишив лише один, більш функціональний #}
+        <h1>✍️ {% if note %}Редагування нотатки: "{{ note.title }}"{% else %}Створити нову нотатку{% endif %}</h1>
+
+        {# Форма відправляє POST-запит. Я припускаю, що ваші роути називаються 'update_note' та 'create_note'. #}
+        <form method="POST" action="{% if note %}
+                                  {{ url_for('update_note', filename=note.title) }}
+                               {% else %}
+                                  {{ url_for('create_note') }}
+                               {% endif %}">
+            
+            <div>
+                <label for="title">Заголовок:</label>
+                <input type="text" 
+                       id="title" 
+                       name="title" 
+                       required 
+                       {# Зверніть увагу: я замінив size="50" на CSS width: 100% #}
+                       value="{{ note['title']|default('') }}">
+            </div>
+
+            <div>
+                <label for="content">Текст нотатки:</label>
+                <textarea id="content" 
+                          name="content" 
+                          rows="10" 
+                          required
+                          {# Зверніть увагу: я замінив cols="50" на CSS width: 100% #}
+                >{{ note['content']|default('') }}</textarea>
+            </div>
+
+            <button type="submit" class="btn-submit">
+                {% if note %}Зберегти зміни{% else %}Створити нотатку{% endif %}
+            </button>
+        </form>
+        
+        <a href="{{ url_for('home') }}" class="back-link">← Переглянути мої нотатки</a>
+
+    </div>
+</body>
+</html>
